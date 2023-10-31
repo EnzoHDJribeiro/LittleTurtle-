@@ -6,8 +6,21 @@ public class Player : MonoBehaviour
 {
     public float veloc ;
 
-     public GameObject pfLaser;
+     
     // Start is called before the first frame update
+
+    
+    [SerializeField]
+    private float _podeDisparar;
+
+    [SerializeField]
+    public bool _possoDarDisparoTriplo = false;
+
+    public GameObject _DisparoTriploPrefab;
+    public GameObject _pfLaser;
+    private float _tempoDeDisparo;
+    public int vidas = 3;
+
     void Start()
     {
         Debug.Log("Método Start de "+this.name) ;
@@ -21,7 +34,9 @@ public class Player : MonoBehaviour
 
         if ( Input.GetKeyDown(KeyCode.Space)){
 
-            Instantiate(pfLaser,transform.position + new Vector3 (1.127f,-0.31f,0),Quaternion.identity);
+            Instantiate(_pfLaser,transform.position + new Vector3 (1.127f,-0.31f,0),Quaternion.identity);
+
+            Disparo();
         }
 
         // Movimento Horizontal X
@@ -51,5 +66,45 @@ public class Player : MonoBehaviour
          if ( transform.position.y < -5.71f){
             transform.position = new Vector3(transform.position.x,5.71f,0);
          }
+    }
+
+    private void Disparo()
+    {
+
+
+        Debug.Log("oi");
+         
+
+
+        if (Time.time > _podeDisparar)
+          {
+
+           
+            if (_possoDarDisparoTriplo == true)
+            {
+                Instantiate(_DisparoTriploPrefab, transform.position, Quaternion.identity);
+            }
+            else
+            {
+                Instantiate(_pfLaser, transform.position + new Vector3(0, 0, 0), Quaternion.identity);
+            }
+             _podeDisparar = Time.time + _tempoDeDisparo ;
+          }
+    }
+    public IEnumerator DisparoTriploRotina(){
+        yield return new WaitForSeconds(7.0f);
+        _possoDarDisparoTriplo = false;
+
+    }
+
+    public void DanoAoPlayer()
+    {
+        // vidas = vidas - 1;
+        vidas--;
+
+        if ( vidas < 1 )
+        {
+            Destroy(this.gameObject);
+        }
     }
 }
